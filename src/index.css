@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', 'Poppins', 'Nunito Sans', sans-serif;
+  
+  --color-sushi-bg: #111827; /* Preto grafite / azul escuro */
+  --color-sushi-black: #030712;
+  --color-sushi-gray: #1f2937;
+  --color-sushi-red: #ef4444; /* Vermelho japonês */
+  --color-sushi-gold: #fbbf24; /* Dourado suave */
+  --color-sushi-green: #10b981; /* Verde finalizar */
+  --color-sushi-blue: #3b82f6; /* Azul imprimir */
+}
+
+@layer base {
+  html, body, #root {
+    @apply w-full min-h-screen m-0 p-0;
+  }
+  body {
+    @apply bg-sushi-bg text-gray-100 antialiased;
+  }
+}

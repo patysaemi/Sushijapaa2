@@ -1,0 +1,64 @@
+import { Link, useLocation } from 'react-router-dom';
+import { 
+  LayoutDashboard, 
+  ShoppingCart, 
+  PackageSearch, 
+  ListOrdered, 
+  Tags, 
+  PieChart, 
+  Settings, 
+  UtensilsCrossed 
+} from 'lucide-react';
+
+export default function Sidebar() {
+  const location = useLocation();
+
+  const menuItems = [
+    { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
+    { path: '/caixa', label: 'Pedidos / Caixa', icon: <ShoppingCart size={20} /> },
+    { path: '/pedidos', label: 'Lista de Pedidos', icon: <ListOrdered size={20} /> },
+    { path: '/estoque', label: 'Estoque do Dia', icon: <PackageSearch size={20} /> },
+    { path: '/produtos', label: 'Produtos', icon: <UtensilsCrossed size={20} /> },
+    { path: '/categorias', label: 'Categorias', icon: <Tags size={20} /> },
+    { path: '/relatorios', label: 'Relatórios', icon: <PieChart size={20} /> },
+    { path: '/configuracoes', label: 'Configurações', icon: <Settings size={20} /> },
+  ];
+
+  return (
+    <aside className="w-64 bg-gray-900 border-r border-gray-800 h-screen flex flex-col">
+      <div className="p-6 flex items-center gap-3">
+        <div className="bg-red-500 p-2 rounded-lg">
+          <UtensilsCrossed size={24} className="text-white" />
+        </div>
+        <div>
+          <h1 className="font-bold text-lg leading-tight tracking-tight text-white">Trailer Sushi</h1>
+          <span className="text-xs text-red-500 font-semibold tracking-widest">JAPA</span>
+        </div>
+      </div>
+
+      <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
+        {menuItems.map((item) => {
+          const isActive = location.pathname === item.path;
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                isActive 
+                  ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' 
+                  : 'text-gray-400 hover:bg-gray-800 hover:text-gray-100'
+              }`}
+            >
+              {item.icon}
+              <span className="font-medium">{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+      
+      <div className="p-4 border-t border-gray-800 text-center">
+        <p className="text-xs text-gray-500">v1.0.0 - Caixa</p>
+      </div>
+    </aside>
+  );
+}

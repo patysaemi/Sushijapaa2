@@ -175,37 +175,52 @@ export default function Caixa() {
   };
 
   const imprimirComanda = () => {
-    // Nova janela para impressão térmica (80mm)
     const printWindow = window.open('', '_blank', 'width=400,height=600');
     if (!printWindow) return;
 
     const dataHora = new Date().toLocaleString('pt-BR');
     
     let html = `
+      <!DOCTYPE html>
       <html>
       <head>
-        <title>Comanda - Trailer Sushi Japa</title>
+        <title>Comanda - ${clienteNome}</title>
         <style>
-          body { font-family: 'Courier New', Courier, monospace; width: 300px; margin: 0; padding: 10px; font-size: 14px; }
+          @page { margin: 0; }
+          body { 
+            font-family: 'Courier New', Courier, monospace; 
+            width: 80mm; 
+            max-width: 300px; 
+            margin: 0 auto; 
+            padding: 15px 10px; 
+            font-size: 12px; 
+            color: #000;
+            line-height: 1.2;
+          }
           .center { text-align: center; }
+          .bold { font-weight: bold; }
           .line { border-bottom: 1px dashed #000; margin: 10px 0; }
-          .item { display: flex; justify-content: space-between; margin-bottom: 5px; }
-          .total { font-weight: bold; font-size: 16px; text-align: right; margin-top: 10px; }
+          .item { display: flex; align-items: flex-start; margin-bottom: 6px; }
+          .item-qtd { width: 25px; }
+          .item-name { flex: 1; padding-right: 5px; text-transform: uppercase; word-break: break-word; }
+          .item-price { text-align: right; white-space: nowrap; }
+          .total { font-weight: bold; font-size: 14px; text-align: center; margin: 10px 0; }
         </style>
       </head>
       <body>
-        <h2 class="center" style="margin-bottom: 5px;">TRAILER SUSHI JAPA</h2>
-        <div class="center">Data: ${dataHora}</div>
+        <div class="center bold" style="font-size: 16px; margin-bottom: 5px;">TRAILER SUSHI<br>JAPA</div>
         <div class="line"></div>
-        <div><strong>Cliente:</strong> ${clienteNome}</div>
+        <div class="center bold" style="text-transform: uppercase; margin-bottom: 5px;">CLIENTE: ${clienteNome}</div>
+        <div class="center" style="font-size: 11px;">DATA: ${dataHora}</div>
         <div class="line"></div>
     `;
 
     carrinho.forEach(item => {
       html += `
         <div class="item">
-          <span>${item.quantidade_carrinho}x ${item.nome}</span>
-          <span>R$ ${item.subtotal.toFixed(2)}</span>
+          <div class="item-qtd">${item.quantidade_carrinho}x</div>
+          <div class="item-name">${item.nome}</div>
+          <div class="item-price">R$ ${item.subtotal.toFixed(2)}</div>
         </div>
       `;
     });
@@ -214,7 +229,7 @@ export default function Caixa() {
         <div class="line"></div>
         <div class="total">TOTAL: R$ ${totalCarrinho.toFixed(2)}</div>
         <div class="line"></div>
-        <div class="center" style="margin-top: 20px;">Obrigado pela preferência!</div>
+        <div class="center bold" style="margin-top: 15px; font-size: 11px;">OBRIGADO PELA PREFERÊNCIA!</div>
         <script>
           window.onload = function() { window.print(); window.close(); }
         </script>

@@ -93,31 +93,47 @@ export default function Pedidos() {
     const dataHora = format(new Date(pedido.data), 'dd/MM/yyyy HH:mm');
     
     let html = `
+      <!DOCTYPE html>
       <html>
       <head>
         <title>Comanda - ${pedido.cliente_nome}</title>
         <style>
-          body { font-family: 'Courier New', Courier, monospace; width: 300px; margin: 0; padding: 10px; font-size: 14px; }
+          @page { margin: 0; }
+          body { 
+            font-family: 'Courier New', Courier, monospace; 
+            width: 80mm; 
+            max-width: 300px; 
+            margin: 0 auto; 
+            padding: 15px 10px; 
+            font-size: 12px; 
+            color: #000;
+            line-height: 1.2;
+          }
           .center { text-align: center; }
+          .bold { font-weight: bold; }
           .line { border-bottom: 1px dashed #000; margin: 10px 0; }
-          .item { display: flex; justify-content: space-between; margin-bottom: 5px; }
-          .total { font-weight: bold; font-size: 16px; text-align: right; margin-top: 10px; }
+          .item { display: flex; align-items: flex-start; margin-bottom: 6px; }
+          .item-qtd { width: 25px; }
+          .item-name { flex: 1; padding-right: 5px; text-transform: uppercase; word-break: break-word; }
+          .item-price { text-align: right; white-space: nowrap; }
+          .total { font-weight: bold; font-size: 14px; text-align: center; margin: 10px 0; }
         </style>
       </head>
       <body>
-        <h2 class="center" style="margin-bottom: 5px;">TRAILER SUSHI JAPA</h2>
-        <div class="center">*** REIMPRESSÃO ***</div>
-        <div class="center">Data: ${dataHora}</div>
+        <div class="center bold" style="font-size: 16px; margin-bottom: 5px;">TRAILER SUSHI<br>JAPA</div>
+        <div class="center" style="font-size: 10px; margin-bottom: 5px;">*** REIMPRESSÃO ***</div>
         <div class="line"></div>
-        <div><strong>Cliente:</strong> ${pedido.cliente_nome}</div>
+        <div class="center bold" style="text-transform: uppercase; margin-bottom: 5px;">CLIENTE: ${pedido.cliente_nome}</div>
+        <div class="center" style="font-size: 11px;">DATA: ${dataHora}</div>
         <div class="line"></div>
     `;
 
     itens.forEach(item => {
       html += `
         <div class="item">
-          <span>${item.quantidade}x ${item.produto_nome}</span>
-          <span>R$ ${item.subtotal.toFixed(2)}</span>
+          <div class="item-qtd">${item.quantidade}x</div>
+          <div class="item-name">${item.produto_nome}</div>
+          <div class="item-price">R$ ${item.subtotal.toFixed(2)}</div>
         </div>
       `;
     });
@@ -126,6 +142,7 @@ export default function Pedidos() {
         <div class="line"></div>
         <div class="total">TOTAL: R$ ${pedido.total.toFixed(2)}</div>
         <div class="line"></div>
+        <div class="center bold" style="margin-top: 15px; font-size: 11px;">OBRIGADO PELA PREFERÊNCIA!</div>
         <script>
           window.onload = function() { window.print(); window.close(); }
         </script>

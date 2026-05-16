@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   ShoppingCart, 
@@ -12,6 +12,7 @@ import {
 
 export default function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const menuItems = [
     { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
@@ -23,6 +24,21 @@ export default function Sidebar() {
     { path: '/relatorios', label: 'Relatórios', icon: <PieChart size={20} /> },
     { path: '/configuracoes', label: 'Configurações', icon: <Settings size={20} /> },
   ];
+
+  const handleNavigate = (e: React.MouseEvent, path: string) => {
+    e.preventDefault();
+    if (location.pathname === path) return;
+
+    const event = new CustomEvent('navigation-attempt', { 
+      detail: { path }, 
+      cancelable: true 
+    });
+    const allowNav = window.dispatchEvent(event);
+    
+    if (allowNav) {
+      navigate(path);
+    }
+  };
 
   return (
     <aside className="w-64 bg-gray-900 border-r border-gray-800 h-screen flex flex-col">
@@ -40,10 +56,11 @@ export default function Sidebar() {
         {menuItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
-            <Link
+            <a
+              href={item.path}
               key={item.path}
-              to={item.path}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+              onClick={(e) => handleNavigate(e, item.path)}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer ${
                 isActive 
                   ? 'bg-red-500 text-white shadow-lg shadow-red-500/20' 
                   : 'text-gray-400 hover:bg-gray-800 hover:text-gray-100'
@@ -51,7 +68,7 @@ export default function Sidebar() {
             >
               {item.icon}
               <span className="font-medium">{item.label}</span>
-            </Link>
+            </a>
           );
         })}
       </nav>

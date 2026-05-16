@@ -135,9 +135,9 @@ export default function Estoque() {
           <p className="text-gray-400">Abasteça os itens disponíveis para venda hoje ({new Date().toLocaleDateString('pt-BR')})</p>
         </div>
         <button 
-          onClick={salvarEstoque}
+          onClick={() => salvarEstoque()}
           disabled={salvando}
-          className="bg-green-600 hover:bg-green-700 disabled:bg-gray-700 disabled:cursor-not-allowed text-white px-6 py-3 rounded-lg font-bold flex items-center gap-2 shadow-lg shadow-green-600/20"
+          className="bg-[#00c996] hover:bg-[#00a87d] text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 transition-all disabled:opacity-50 shadow-lg shadow-[#00c996]/20"
         >
           <Save size={20} /> {salvando ? 'Salvando...' : 'Salvar Estoque'}
         </button>

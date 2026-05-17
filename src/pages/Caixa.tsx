@@ -13,7 +13,7 @@ type ProdutoEstoque = {
 type CartItem = ProdutoEstoque & { quantidade_carrinho: number; subtotal: number; };
 
 export default function Caixa() {
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<1 | 2>(1);
   const [clienteNome, setClienteNome] = useState('');
   
   const [categorias, setCategorias] = useState<Categoria[]>([]);
@@ -78,16 +78,11 @@ export default function Caixa() {
     setLoading(false);
   };
 
-  const handleStartPedido = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (clienteNome.trim()) {
-      setStep(2);
-    }
-  };
+
 
   const selectCategoria = (cat: Categoria) => {
     setCategoriaSelecionada(cat);
-    setStep(3);
+    setStep(2);
     fetchProdutosDaCategoria(cat.id);
   };
 
@@ -253,45 +248,12 @@ export default function Caixa() {
       {/* Lado Esquerdo - Fluxo */}
       <div className="flex-1 bg-gray-900 rounded-2xl p-6 border border-gray-800 flex flex-col">
         
-        {step === 1 && (
-          <div className="flex-1 flex flex-col items-center justify-center max-w-md mx-auto w-full">
-            <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mb-6">
-              <ShoppingCart size={32} className="text-white" />
-            </div>
-            <h2 className="text-3xl font-bold text-gray-100 mb-8">Novo Pedido</h2>
-            <form onSubmit={handleStartPedido} className="w-full space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">Nome do Cliente</label>
-                <input 
-                  type="text" 
-                  required
-                  autoFocus
-                  value={clienteNome}
-                  onChange={(e) => setClienteNome(e.target.value)}
-                  className="w-full bg-gray-950 border border-gray-800 rounded-xl px-4 py-4 text-xl text-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="Ex: João Silva"
-                />
-              </div>
-              <button 
-                type="submit"
-                className="w-full bg-red-600 hover:bg-red-700 text-white rounded-xl py-4 text-xl font-bold transition-colors"
-              >
-                Continuar
-              </button>
-            </form>
-          </div>
-        )}
 
-        {step === 2 && (
+
+        {step === 1 && (
           <div className="flex flex-col h-full">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-2xl font-bold text-gray-100">Escolha uma Categoria</h2>
-              <button 
-                onClick={() => setStep(1)}
-                className="flex items-center gap-2 text-gray-400 hover:text-white bg-gray-800 px-4 py-2 rounded-lg"
-              >
-                <ArrowLeft size={20} /> Voltar
-              </button>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 auto-rows-fr">
               {categorias.map(cat => (
@@ -308,12 +270,12 @@ export default function Caixa() {
           </div>
         )}
 
-        {step === 3 && (
+        {step === 2 && (
           <div className="flex flex-col h-full">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">
                 <button 
-                  onClick={() => setStep(2)}
+                  onClick={() => setStep(1)}
                   className="text-gray-400 hover:text-white bg-gray-800 p-2 rounded-lg"
                 >
                   <ArrowLeft size={20} />
@@ -364,13 +326,23 @@ export default function Caixa() {
 
       {/* Lado Direito - Carrinho / Comanda */}
       <div className="w-96 bg-gray-900 rounded-2xl border border-gray-800 flex flex-col overflow-hidden">
-        <div className="p-4 bg-gray-950 border-b border-gray-800">
+        <div className="p-4 bg-gray-950 border-b border-gray-800 flex flex-col gap-3">
           <h3 className="text-lg font-bold text-gray-100 flex items-center gap-2">
             <ShoppingCart size={20} className="text-red-500" /> 
             Comanda Atual
           </h3>
-          {clienteNome && (
-            <p className="text-sm text-gray-400 mt-1">Cliente: <span className="text-white font-medium">{clienteNome}</span></p>
+          {!pedidoFinalizadoId ? (
+            <div>
+              <input 
+                type="text" 
+                placeholder="Nome do Cliente (Obrigatório)" 
+                value={clienteNome}
+                onChange={(e) => setClienteNome(e.target.value)}
+                className="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:ring-1 focus:ring-red-500"
+              />
+            </div>
+          ) : (
+            <p className="text-sm text-gray-400">Cliente: <span className="text-white font-medium">{clienteNome}</span></p>
           )}
         </div>
 
@@ -439,9 +411,9 @@ export default function Caixa() {
 
               <button 
                 onClick={finalizarPedido}
-                disabled={carrinho.length === 0}
+                disabled={carrinho.length === 0 || !clienteNome.trim()}
                 className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-colors ${
-                  carrinho.length > 0 
+                  carrinho.length > 0 && clienteNome.trim()
                     ? 'bg-green-600 hover:bg-green-700 text-white' 
                     : 'bg-gray-800 text-gray-500 cursor-not-allowed'
                 }`}

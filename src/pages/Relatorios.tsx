@@ -78,49 +78,36 @@ export default function Relatorios() {
     .sort((a, b) => b[1].qtd - a[1].qtd)
     .slice(0, 10);
 
-  const enviarParaN8n = async () => {
-    const webhookUrl = localStorage.getItem('n8n_webhook_url');
-    if (!webhookUrl) {
-      alert('URL do Webhook do n8n não configurada. Por favor, vá em Configurações e defina a URL.');
-      return;
-    }
-
+  const salvarRelatorio = async () => {
     setEnviandoN8n(true);
     setN8nStatus('idle');
 
-    // Montar o payload JSON
-    const payload = {
-      periodo: {
-        inicio: format(new Date(dataInicio + 'T00:00:00'), 'dd/MM/yyyy'),
-        fim: format(new Date(dataFim + 'T00:00:00'), 'dd/MM/yyyy')
-      },
-      resumo: {
-        faturamento_total: faturamentoTotal,
-        quantidade_pedidos: pedidos.length,
-        ticket_medio: ticketMedio
-      },
-      formas_pagamento: pagamentos,
-      top_produtos: topProdutos.map(([nome, dados]) => ({
-        nome,
-        quantidade: dados.qtd,
-        receita: dados.receita
-      }))
-    };
-
     try {
-      const response = await fetch(webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+      const payload = {
+        data: dataInicio,
+        total_pedidos: pedidos.length,
+        faturamento_total: faturamentoTotal,
+        ticket_medio: ticketMedio,
+        formas_pagamento: pagamentos,
+        top_produtos: topProdutos.map(([nome, dados]) => ({
+          nome,
+          quantidade: dados.qtd,
+          receita: dados.receita
+        }))
+      };
 
-      if (response.ok) {
-        setN8nStatus('success');
-      } else {
-        setN8nStatus('error');
+      const { error } = await supabase
+        .from('vendas_diarias')
+        .upsert(payload, { onConflict: 'data' });
+
+      if (error) {
+        console.error("Supabase Error:", error);
+        throw error;
       }
+
+      setN8nStatus('success');
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao salvar:", error);
       setN8nStatus('error');
     } finally {
       setEnviandoN8n(false);
@@ -160,22 +147,22 @@ export default function Relatorios() {
 
       <div className="flex flex-wrap gap-4">
         <button 
-          onClick={enviarParaN8n}
+          onClick={salvarRelatorio}
           disabled={enviandoN8n || loading}
           className="bg-[#00c996] hover:bg-[#00a87d] text-white px-5 py-3 rounded-xl font-bold flex items-center gap-2 transition-all disabled:opacity-50"
         >
           <Send size={20} />
-          {enviandoN8n ? 'Enviando...' : 'Enviar para WhatsApp (n8n)'}
+          {enviandoN8n ? 'Salvando...' : 'Salvar Relatório no Banco (para n8n)'}
         </button>
         
         {n8nStatus === 'success' && (
           <div className="flex items-center gap-2 text-green-400 bg-green-500/10 px-4 py-3 rounded-xl">
-            <CheckCircle2 size={20} /> Relatório enviado com sucesso!
+            <CheckCircle2 size={20} /> Relatório salvo no banco com sucesso!
           </div>
         )}
         {n8nStatus === 'error' && (
           <div className="flex items-center gap-2 text-red-400 bg-red-500/10 px-4 py-3 rounded-xl">
-            <AlertCircle size={20} /> Erro ao enviar para o webhook. Verifique a URL.
+            <AlertCircle size={20} /> Erro ao salvar o relatório.
           </div>
         )}
       </div>

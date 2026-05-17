@@ -65,6 +65,8 @@ CREATE TABLE vendas_diarias (
   total_pedidos INTEGER DEFAULT 0,
   faturamento_total NUMERIC(10, 2) DEFAULT 0,
   ticket_medio NUMERIC(10, 2) DEFAULT 0,
+  formas_pagamento JSONB DEFAULT '{}'::jsonb,
+  top_produtos JSONB DEFAULT '[]'::jsonb,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 

@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Save, Webhook } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Save, Webhook, Tags, UtensilsCrossed } from 'lucide-react';
 
 export default function Configuracoes() {
+  const navigate = useNavigate();
   const [webhookUrl, setWebhookUrl] = useState('');
   const [salvando, setSalvando] = useState(false);
   const [salvo, setSalvo] = useState(false);
@@ -63,6 +65,34 @@ export default function Configuracoes() {
             </button>
           </div>
         </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <button 
+          onClick={() => navigate('/categorias')}
+          className="bg-gray-900 border border-gray-800 hover:border-gray-700 hover:bg-gray-800 rounded-2xl p-6 shadow-lg flex flex-col items-center justify-center text-center gap-4 transition-all"
+        >
+          <div className="bg-purple-500/10 p-4 rounded-xl">
+            <Tags className="text-purple-500" size={32} />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-white mb-1">Categorias</h2>
+            <p className="text-sm text-gray-400">Gerenciar categorias do cardápio</p>
+          </div>
+        </button>
+
+        <button 
+          onClick={() => navigate('/produtos')}
+          className="bg-gray-900 border border-gray-800 hover:border-gray-700 hover:bg-gray-800 rounded-2xl p-6 shadow-lg flex flex-col items-center justify-center text-center gap-4 transition-all"
+        >
+          <div className="bg-green-500/10 p-4 rounded-xl">
+            <UtensilsCrossed className="text-green-500" size={32} />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-white mb-1">Produtos</h2>
+            <p className="text-sm text-gray-400">Gerenciar itens e preços</p>
+          </div>
+        </button>
       </div>
     </div>
   );

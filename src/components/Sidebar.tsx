@@ -19,8 +19,6 @@ export default function Sidebar() {
     { path: '/caixa', label: 'Pedidos / Caixa', icon: <ShoppingCart size={20} /> },
     { path: '/pedidos', label: 'Lista de Pedidos', icon: <ListOrdered size={20} /> },
     { path: '/estoque', label: 'Estoque do Dia', icon: <PackageSearch size={20} /> },
-    { path: '/produtos', label: 'Produtos', icon: <UtensilsCrossed size={20} /> },
-    { path: '/categorias', label: 'Categorias', icon: <Tags size={20} /> },
     { path: '/relatorios', label: 'Relatórios', icon: <PieChart size={20} /> },
     { path: '/configuracoes', label: 'Configurações', icon: <Settings size={20} /> },
   ];

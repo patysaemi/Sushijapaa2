@@ -152,17 +152,17 @@ export default function Relatorios() {
           className="bg-[#00c996] hover:bg-[#00a87d] text-white px-5 py-3 rounded-xl font-bold flex items-center gap-2 transition-all disabled:opacity-50"
         >
           <Send size={20} />
-          {enviandoN8n ? 'Salvando...' : 'Salvar Relatório no Banco (para n8n)'}
+          {enviandoN8n ? 'Salvando...' : 'FECHAR CAIXA'}
         </button>
         
         {n8nStatus === 'success' && (
           <div className="flex items-center gap-2 text-green-400 bg-green-500/10 px-4 py-3 rounded-xl">
-            <CheckCircle2 size={20} /> Relatório salvo no banco com sucesso!
+            <CheckCircle2 size={20} /> Caixa fechado com sucesso! (Salvo no banco)
           </div>
         )}
         {n8nStatus === 'error' && (
           <div className="flex items-center gap-2 text-red-400 bg-red-500/10 px-4 py-3 rounded-xl">
-            <AlertCircle size={20} /> Erro ao salvar o relatório.
+            <AlertCircle size={20} /> Erro ao fechar caixa.
           </div>
         )}
       </div>

@@ -125,21 +125,29 @@ export default function Relatorios() {
         
         <div className="flex items-end gap-4 bg-gray-900 p-4 rounded-xl border border-gray-800">
           <div>
-            <label className="block text-xs font-medium text-gray-400 mb-1">Data Inicial</label>
+            <label className="block text-xs font-medium text-gray-400 mb-1 cursor-pointer" htmlFor="data-inicio">Data Inicial</label>
             <input 
+              id="data-inicio"
               type="date" 
               value={dataInicio} 
               onChange={(e) => setDataInicio(e.target.value)}
-              className="bg-gray-950 border border-gray-800 rounded-lg p-2 text-gray-100 text-sm"
+              onClick={(e) => {
+                try { e.currentTarget.showPicker() } catch (err) {}
+              }}
+              className="bg-gray-950 border border-gray-800 rounded-lg p-2 text-gray-100 text-sm cursor-pointer w-full"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-400 mb-1">Data Final</label>
+            <label className="block text-xs font-medium text-gray-400 mb-1 cursor-pointer" htmlFor="data-fim">Data Final</label>
             <input 
+              id="data-fim"
               type="date" 
               value={dataFim} 
               onChange={(e) => setDataFim(e.target.value)}
-              className="bg-gray-950 border border-gray-800 rounded-lg p-2 text-gray-100 text-sm"
+              onClick={(e) => {
+                try { e.currentTarget.showPicker() } catch (err) {}
+              }}
+              className="bg-gray-950 border border-gray-800 rounded-lg p-2 text-gray-100 text-sm cursor-pointer w-full"
             />
           </div>
         </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { startOfDay, endOfDay, format } from 'date-fns';
-import { Calendar, DollarSign, ShoppingBag, Send, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Calendar, DollarSign, ShoppingBag, Send, AlertCircle, CheckCircle2, MessageCircle } from 'lucide-react';
 import type { Pedido, PedidoItem } from '../types/database';
 
 export default function Relatorios() {
@@ -15,6 +15,8 @@ export default function Relatorios() {
   
   const [enviandoN8n, setEnviandoN8n] = useState(false);
   const [n8nStatus, setN8nStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [enviandoWhats, setEnviandoWhats] = useState(false);
+  const [whatsStatus, setWhatsStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   useEffect(() => {
     fetchRelatorio();
@@ -115,6 +117,55 @@ export default function Relatorios() {
     }
   };
 
+  const enviarWhatsApp = async () => {
+    const webhookUrl = localStorage.getItem('n8n_webhook_url');
+    
+    if (!webhookUrl) {
+      alert("Por favor, configure a URL do webhook do n8n nas Configurações.");
+      return;
+    }
+
+    setEnviandoWhats(true);
+    setWhatsStatus('idle');
+
+    try {
+      const payload = {
+        event: 'relatorio_financeiro',
+        dataInicio,
+        dataFim,
+        faturamentoTotal,
+        ticketMedio,
+        totalPedidos: pedidos.length,
+        pagamentos,
+        topProdutos: topProdutos.map(([nome, dados]) => ({
+          nome,
+          quantidade: dados.qtd,
+          receita: dados.receita
+        }))
+      };
+
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro na requisição pro webhook');
+      }
+
+      setWhatsStatus('success');
+    } catch (error) {
+      console.error("Erro ao enviar whatsapp:", error);
+      setWhatsStatus('error');
+    } finally {
+      setEnviandoWhats(false);
+      setTimeout(() => setWhatsStatus('idle'), 5000);
+    }
+  };
+
   return (
     <div className="space-y-6 pb-10">
       <div className="flex flex-col md:flex-row justify-between md:items-end gap-4">
@@ -162,6 +213,15 @@ export default function Relatorios() {
           <Send size={20} />
           {enviandoN8n ? 'Salvando...' : 'FECHAR CAIXA'}
         </button>
+
+        <button 
+          onClick={enviarWhatsApp}
+          disabled={enviandoWhats || loading}
+          className="bg-[#25D366] hover:bg-[#128C7E] text-white px-5 py-3 rounded-xl font-bold flex items-center gap-2 transition-all disabled:opacity-50"
+        >
+          <MessageCircle size={20} />
+          {enviandoWhats ? 'Enviando...' : 'ENVIAR WHATSAPP'}
+        </button>
         
         {n8nStatus === 'success' && (
           <div className="flex items-center gap-2 text-green-400 bg-green-500/10 px-4 py-3 rounded-xl">
@@ -171,6 +231,17 @@ export default function Relatorios() {
         {n8nStatus === 'error' && (
           <div className="flex items-center gap-2 text-red-400 bg-red-500/10 px-4 py-3 rounded-xl">
             <AlertCircle size={20} /> Erro ao fechar caixa.
+          </div>
+        )}
+
+        {whatsStatus === 'success' && (
+          <div className="flex items-center gap-2 text-green-400 bg-green-500/10 px-4 py-3 rounded-xl">
+            <CheckCircle2 size={20} /> Relatório enviado pro WhatsApp!
+          </div>
+        )}
+        {whatsStatus === 'error' && (
+          <div className="flex items-center gap-2 text-red-400 bg-red-500/10 px-4 py-3 rounded-xl">
+            <AlertCircle size={20} /> Erro ao enviar WhatsApp.
           </div>
         )}
       </div>

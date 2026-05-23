@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { ShoppingCart, ArrowLeft, Plus, Minus, Trash2, Printer, CheckCircle2 } from 'lucide-react';
+import { ShoppingCart, ArrowLeft, Plus, Minus, Trash2, Printer, CheckCircle2, Search } from 'lucide-react';
 
 type Categoria = { id: string; nome: string; cor: string; };
 type ProdutoEstoque = { 
@@ -11,6 +11,12 @@ type ProdutoEstoque = {
   quantidade_atual: number; 
 };
 type CartItem = ProdutoEstoque & { quantidade_carrinho: number; subtotal: number; };
+
+type ProdutoComCategoria = ProdutoEstoque & {
+  categoria_nome: string;
+  categoria_cor: string;
+  categoria_id: string;
+};
 
 export default function Caixa() {
   const [step, setStep] = useState<1 | 2>(1);
@@ -26,14 +32,59 @@ export default function Caixa() {
   const [formaPagamento, setFormaPagamento] = useState('Dinheiro');
   
   const [pedidoFinalizadoId, setPedidoFinalizadoId] = useState<string | null>(null);
+  
+  const [todosProdutos, setTodosProdutos] = useState<ProdutoComCategoria[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
     fetchCategorias();
+    fetchTodosProdutos();
   }, []);
 
   const fetchCategorias = async () => {
     const { data } = await supabase.from('categorias').select('*').eq('ativo', true).order('ordem');
     if (data) setCategorias(data);
+  };
+
+  const fetchTodosProdutos = async () => {
+    try {
+      const { data: todosProds } = await supabase
+        .from('produtos')
+        .select('id, nome, preco, imagem_url, categoria_id')
+        .eq('ativo', true);
+
+      if (!todosProds || todosProds.length === 0) return;
+
+      const { data: cats } = await supabase
+        .from('categorias')
+        .select('id, nome, cor');
+
+      const hoje = new Date().toISOString().split('T')[0];
+      const { data: estoqueHoje } = await supabase
+        .from('estoque_dia')
+        .select('produto_id, quantidade_atual')
+        .eq('data', hoje);
+
+      const produtosCompletos: ProdutoComCategoria[] = todosProds.map(p => {
+        const est = estoqueHoje?.find(e => e.produto_id === p.id);
+        const cat = cats?.find(c => c.id === p.categoria_id);
+        return {
+          produto_id: p.id,
+          nome: p.nome,
+          preco: p.preco,
+          imagem_url: p.imagem_url,
+          quantidade_atual: est ? est.quantidade_atual : 0,
+          categoria_id: p.categoria_id,
+          categoria_nome: cat ? cat.nome : 'Sem Categoria',
+          categoria_cor: cat ? cat.cor : '#9CA3AF'
+        };
+      });
+
+      setTodosProdutos(produtosCompletos);
+    } catch (err) {
+      console.error('Erro ao buscar todos os produtos:', err);
+    }
   };
 
   const fetchProdutosDaCategoria = async (categoriaId: string) => {
@@ -241,6 +292,7 @@ export default function Caixa() {
     setCarrinho([]);
     setStep(1);
     setPedidoFinalizadoId(null);
+    fetchTodosProdutos();
   };
 
   return (

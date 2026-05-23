@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { startOfDay, endOfDay, format } from 'date-fns';
+import { startOfDay, endOfDay } from 'date-fns';
 import { Calendar, DollarSign, ShoppingBag, Send, AlertCircle, CheckCircle2, MessageCircle } from 'lucide-react';
 import type { Pedido, PedidoItem } from '../types/database';
 

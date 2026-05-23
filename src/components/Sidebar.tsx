@@ -4,7 +4,6 @@ import {
   ShoppingCart, 
   PackageSearch, 
   ListOrdered, 
-  Tags, 
   PieChart, 
   Settings, 
   UtensilsCrossed 

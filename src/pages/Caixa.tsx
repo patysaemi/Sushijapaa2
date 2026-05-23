@@ -232,52 +232,176 @@ export default function Caixa() {
       <head>
         <title>Comanda - ${clienteNome}</title>
         <style>
-          @page { margin: 0; }
+          @page { 
+            size: 80mm auto; 
+            margin: 0; 
+          }
+          html, body {
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+          }
           body { 
             font-family: 'Courier New', Courier, monospace; 
-            width: 80mm; 
-            max-width: 300px; 
+            width: 72mm; 
             margin: 0 auto; 
-            padding: 15px 10px; 
-            font-size: 12px; 
+            padding: 10px 5px; 
+            font-size: 13px; 
             color: #000;
-            line-height: 1.2;
+            line-height: 1.3;
           }
           .center { text-align: center; }
           .bold { font-weight: bold; }
-          .line { border-bottom: 1px dashed #000; margin: 10px 0; }
-          .item { display: flex; align-items: flex-start; margin-bottom: 6px; }
-          .item-qtd { width: 25px; }
-          .item-name { flex: 1; padding-right: 5px; text-transform: uppercase; word-break: break-word; }
-          .item-price { text-align: right; white-space: nowrap; }
-          .total { font-weight: bold; font-size: 14px; text-align: center; margin: 10px 0; }
+          .text-uppercase { text-transform: uppercase; }
+          .header-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 2px;
+            letter-spacing: 0.5px;
+          }
+          .header-subtitle {
+            font-size: 11px;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
+          }
+          .header-date {
+            font-size: 11px;
+            margin-bottom: 8px;
+          }
+          .client-box {
+            border-top: 2px solid #000;
+            border-bottom: 2px solid #000;
+            padding: 6px 0;
+            margin: 8px 0;
+            text-align: center;
+          }
+          .client-title {
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+            letter-spacing: 1px;
+          }
+          .client-name {
+            font-size: 22px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+          .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0;
+          }
+          .items-table th {
+            font-weight: bold;
+            font-size: 11px;
+            padding: 4px 0;
+            text-align: left;
+          }
+          .items-table th.col-qtd {
+            width: 10%;
+          }
+          .items-table th.col-item {
+            width: 65%;
+          }
+          .items-table th.col-valor {
+            width: 25%;
+            text-align: right;
+          }
+          .items-table td {
+            padding: 5px 0;
+            vertical-align: top;
+            font-size: 12px;
+          }
+          .items-table td.col-qtd {
+            text-align: left;
+            font-weight: bold;
+          }
+          .items-table td.col-item {
+            text-transform: uppercase;
+            word-break: break-word;
+          }
+          .items-table td.col-valor {
+            text-align: right;
+            white-space: nowrap;
+          }
+          .total-box {
+            border-top: 3px solid #000;
+            border-bottom: 3px solid #000;
+            padding: 8px 0;
+            margin: 8px 0 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: bold;
+          }
+          .footer {
+            font-size: 10px;
+            margin-top: 15px;
+            line-height: 1.4;
+          }
+          .footer-thanks {
+            font-weight: bold;
+            margin-bottom: 2px;
+          }
         </style>
       </head>
       <body>
-        <div class="center bold" style="font-size: 16px; margin-bottom: 5px;">TRAILER SUSHI<br>JAPA</div>
-        <div class="line"></div>
-        <div class="center bold" style="text-transform: uppercase; margin-bottom: 5px;">CLIENTE: ${clienteNome}</div>
-        <div class="center" style="font-size: 11px;">DATA: ${dataHora}</div>
-        <div class="line"></div>
+        <div class="center">
+          <div class="header-title">TRAILER SUSHI JAPA</div>
+          <div class="header-subtitle">COMPROVANTE DE PEDIDO</div>
+          <div class="header-date">${dataHora}</div>
+        </div>
+
+        <div class="client-box">
+          <div class="client-title">CLIENTE</div>
+          <div class="client-name">${clienteNome}</div>
+        </div>
+
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th class="col-qtd">QTD</th>
+              <th class="col-item">ITEM</th>
+              <th class="col-valor">VALOR</th>
+            </tr>
+          </thead>
+          <tbody>
     `;
 
     carrinho.forEach(item => {
       html += `
-        <div class="item">
-          <div class="item-qtd">${item.quantidade_carrinho}x</div>
-          <div class="item-name">${item.nome}</div>
-          <div class="item-price">R$ ${item.subtotal.toFixed(2)}</div>
-        </div>
+            <tr>
+              <td class="col-qtd">${item.quantidade_carrinho}</td>
+              <td class="col-item">${item.nome}</td>
+              <td class="col-valor">R$ ${item.subtotal.toFixed(2)}</td>
+            </tr>
       `;
     });
 
     html += `
-        <div class="line"></div>
-        <div class="total">TOTAL: R$ ${totalCarrinho.toFixed(2)}</div>
-        <div class="line"></div>
-        <div class="center bold" style="margin-top: 15px; font-size: 11px;">OBRIGADO PELA PREFERÊNCIA!</div>
+          </tbody>
+        </table>
+
+        <div class="total-box">
+          <span>TOTAL</span>
+          <span>R$ ${totalCarrinho.toFixed(2)}</span>
+        </div>
+
+        <div class="center footer">
+          <div class="footer-thanks">*** OBRIGADO PELA PREFERÊNCIA ***</div>
+          <div class="bold">VOLTE SEMPRE!</div>
+        </div>
+
         <script>
-          window.onload = function() { window.print(); window.close(); }
+          window.onload = function() { 
+            window.print(); 
+            setTimeout(function() {
+              window.close();
+            }, 500);
+          }
         </script>
       </body>
       </html>

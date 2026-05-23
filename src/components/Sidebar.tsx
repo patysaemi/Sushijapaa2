@@ -6,7 +6,6 @@ import {
   ListOrdered, 
   PieChart, 
   Settings, 
-  UtensilsCrossed,
   LogOut
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -50,8 +49,8 @@ export default function Sidebar() {
   return (
     <aside className="w-64 bg-gray-900 border-r border-gray-800 h-screen flex flex-col">
       <div className="p-6 flex items-center gap-3">
-        <div className="bg-red-500 p-2 rounded-lg">
-          <UtensilsCrossed size={24} className="text-white" />
+        <div className="w-12 h-12 flex-shrink-0">
+          <img src="/logo.png" alt="Sushi Japa Logo" className="w-full h-full object-contain rounded-xl shadow-lg" />
         </div>
         <div>
           <h1 className="font-bold text-lg leading-tight tracking-tight text-white">Trailer Sushi</h1>

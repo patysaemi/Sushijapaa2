@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { UtensilsCrossed, Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
 
 export default function Login() {
   const { user } = useAuth();
@@ -65,8 +65,8 @@ export default function Login() {
       <div className="relative z-10 w-full max-w-md px-6">
         {/* Logo e Título */}
         <div className="flex flex-col items-center mb-8">
-          <div className="bg-red-500 p-4 rounded-2xl shadow-xl shadow-red-500/20 mb-4 transition-transform hover:scale-[1.05] duration-300">
-            <UtensilsCrossed size={40} className="text-white" />
+          <div className="w-24 h-24 mb-4 transition-transform hover:scale-[1.05] duration-300">
+            <img src="/logo.png" alt="Sushi Japa Logo" className="w-full h-full object-contain rounded-2xl shadow-xl" />
           </div>
           <h1 className="font-bold text-3xl leading-tight tracking-tight text-white">Trailer Sushi</h1>
           <span className="text-sm text-red-500 font-bold tracking-widest uppercase mt-1">Painel Administrativo</span>

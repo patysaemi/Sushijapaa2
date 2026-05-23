@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { ShoppingCart, ArrowLeft, Plus, Minus, Trash2, Printer, CheckCircle2, Search } from 'lucide-react';
+import { ShoppingCart, ArrowLeft, Plus, Minus, Trash2, Printer, Search } from 'lucide-react';
 
 type Categoria = { id: string; nome: string; cor: string; };
 type ProdutoEstoque = { 
@@ -30,8 +30,6 @@ export default function Caixa() {
   
   const [carrinho, setCarrinho] = useState<CartItem[]>([]);
   const [formaPagamento, setFormaPagamento] = useState('Dinheiro');
-  
-  const [pedidoFinalizadoId, setPedidoFinalizadoId] = useState<string | null>(null);
   
   const [todosProdutos, setTodosProdutos] = useState<ProdutoComCategoria[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -180,11 +178,11 @@ export default function Caixa() {
 
   const totalCarrinho = carrinho.reduce((acc, item) => acc + item.subtotal, 0);
 
-  const finalizarPedido = async () => {
-    if (carrinho.length === 0) return;
+  const finalizarEImprimir = async () => {
+    if (carrinho.length === 0 || !clienteNome.trim()) return;
 
     try {
-      // Inserir pedido
+      // 1. Inserir pedido no banco de dados
       const { data: pedido, error: pedidoError } = await supabase
         .from('pedidos')
         .insert({
@@ -198,7 +196,7 @@ export default function Caixa() {
 
       if (pedidoError) throw pedidoError;
 
-      // Inserir itens
+      // 2. Inserir itens do pedido
       const itensToInsert = carrinho.map(item => ({
         pedido_id: pedido.id,
         produto_id: item.produto_id,
@@ -212,11 +210,27 @@ export default function Caixa() {
       
       if (itensError) throw itensError;
 
-      setPedidoFinalizadoId(pedido.id);
-      
+      // 3. Chamar a impressão da comanda imediatamente
+      imprimirComanda();
+
+      // 4. Limpar o pedido atual e preparar para o próximo cliente
+      setClienteNome('');
+      setCarrinho([]);
+      setStep(1);
+      fetchTodosProdutos(); // Atualiza estoque
+
     } catch (error) {
-      console.error("Erro ao finalizar:", error);
-      alert('Erro ao finalizar pedido.');
+      console.error("Erro ao finalizar pedido:", error);
+      alert('Erro ao finalizar e imprimir o pedido.');
+    }
+  };
+
+  const cancelarPedido = () => {
+    if (carrinho.length === 0 && !clienteNome.trim()) return;
+    if (window.confirm("Deseja realmente cancelar e limpar este pedido atual?")) {
+      setClienteNome('');
+      setCarrinho([]);
+      setStep(1);
     }
   };
 
@@ -411,13 +425,7 @@ export default function Caixa() {
     printWindow.document.close();
   };
 
-  const novoPedido = () => {
-    setClienteNome('');
-    setCarrinho([]);
-    setStep(1);
-    setPedidoFinalizadoId(null);
-    fetchTodosProdutos();
-  };
+
   const produtosFiltrados = searchQuery.trim() === '' 
     ? [] 
     : todosProdutos.filter(prod => 
@@ -682,30 +690,19 @@ export default function Caixa() {
             <ShoppingCart size={20} className="text-red-500" /> 
             Comanda Atual
           </h3>
-          {!pedidoFinalizadoId ? (
-            <div>
-              <input 
-                type="text" 
-                placeholder="Nome do Cliente (Obrigatório)" 
-                value={clienteNome}
-                onChange={(e) => setClienteNome(e.target.value)}
-                className="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:ring-1 focus:ring-red-500"
-              />
-            </div>
-          ) : (
-            <p className="text-sm text-gray-400">Cliente: <span className="text-white font-medium">{clienteNome}</span></p>
-          )}
+          <div>
+            <input 
+              type="text" 
+              placeholder="Nome do Cliente (Obrigatório)" 
+              value={clienteNome}
+              onChange={(e) => setClienteNome(e.target.value)}
+              className="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:ring-1 focus:ring-red-500"
+            />
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
-          {pedidoFinalizadoId ? (
-            <div className="h-full flex flex-col items-center justify-center text-gray-500 space-y-4 text-center">
-              <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center">
-                <CheckCircle2 size={40} className="text-green-500" />
-              </div>
-              <p>Comanda enviada e fechada.</p>
-            </div>
-          ) : carrinho.length === 0 ? (
+          {carrinho.length === 0 ? (
             <div className="h-full flex items-center justify-center text-gray-500 text-sm text-center">
               Adicione produtos para começar
             </div>
@@ -747,53 +744,40 @@ export default function Caixa() {
             <span className="text-2xl font-bold text-gray-100">R$ {totalCarrinho.toFixed(2)}</span>
           </div>
 
-          {!pedidoFinalizadoId ? (
-            <div className="space-y-3">
-              <select 
-                value={formaPagamento}
-                onChange={(e) => setFormaPagamento(e.target.value)}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-gray-100 focus:outline-none focus:border-red-500"
-              >
-                <option value="Dinheiro">Dinheiro</option>
-                <option value="Pix">Pix</option>
-                <option value="Cartão de Crédito">Cartão de Crédito</option>
-                <option value="Cartão de Débito">Cartão de Débito</option>
-              </select>
+          <div className="space-y-3">
+            <select 
+              value={formaPagamento}
+              onChange={(e) => setFormaPagamento(e.target.value)}
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-gray-100 focus:outline-none focus:border-red-500 cursor-pointer"
+            >
+              <option value="Dinheiro">Dinheiro</option>
+              <option value="Pix">Pix</option>
+              <option value="Cartão de Crédito">Cartão de Crédito</option>
+              <option value="Cartão de Débito">Cartão de Débito</option>
+            </select>
 
+            <div className="flex gap-3">
               <button 
-                onClick={finalizarPedido}
+                onClick={cancelarPedido}
+                disabled={carrinho.length === 0 && !clienteNome.trim()}
+                className="flex-1 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-colors border border-gray-750 bg-gray-800 hover:bg-gray-750 text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={finalizarEImprimir}
                 disabled={carrinho.length === 0 || !clienteNome.trim()}
-                className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-colors ${
+                className={`flex-[2] py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-colors ${
                   carrinho.length > 0 && clienteNome.trim()
-                    ? 'bg-green-600 hover:bg-green-700 text-white' 
+                    ? 'bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/20 cursor-pointer' 
                     : 'bg-gray-800 text-gray-500 cursor-not-allowed'
                 }`}
               >
-                <CheckCircle2 size={24} />
-                Finalizar Pedido
+                <Printer size={22} />
+                Imprimir
               </button>
             </div>
-          ) : (
-            <div className="space-y-3">
-              <div className="bg-green-900/30 border border-green-500/30 text-green-400 p-3 rounded-lg text-center font-bold text-sm">
-                Pedido Finalizado com Sucesso!
-              </div>
-              <div className="flex gap-2">
-                <button 
-                  onClick={imprimirComanda}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors"
-                >
-                  <Printer size={20} /> Imprimir
-                </button>
-                <button 
-                  onClick={novoPedido}
-                  className="flex-1 bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-colors"
-                >
-                  <Plus size={20} /> Novo
-                </button>
-              </div>
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </div>

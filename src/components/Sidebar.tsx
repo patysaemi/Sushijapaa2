@@ -14,11 +14,11 @@ export default function Sidebar() {
   const navigate = useNavigate();
 
   const menuItems = [
-    { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-    { path: '/caixa', label: 'Pedidos / Caixa', icon: <ShoppingCart size={20} /> },
+    { path: '/caixa', label: 'Pedidos', icon: <ShoppingCart size={20} /> },
     { path: '/pedidos', label: 'Lista de Pedidos', icon: <ListOrdered size={20} /> },
-    { path: '/estoque', label: 'Estoque do Dia', icon: <PackageSearch size={20} /> },
     { path: '/relatorios', label: 'Relatórios', icon: <PieChart size={20} /> },
+    { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
+    { path: '/estoque', label: 'Estoque do Dia', icon: <PackageSearch size={20} /> },
     { path: '/configuracoes', label: 'Configurações', icon: <Settings size={20} /> },
   ];
 

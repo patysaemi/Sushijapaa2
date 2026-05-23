@@ -294,6 +294,17 @@ export default function Caixa() {
     setPedidoFinalizadoId(null);
     fetchTodosProdutos();
   };
+  const produtosFiltrados = searchQuery.trim() === '' 
+    ? [] 
+    : todosProdutos.filter(prod => 
+        prod.nome.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+
+  const handleSelectProduct = (prod: ProdutoComCategoria) => {
+    adicionarAoCarrinho(prod);
+    setSearchQuery('');
+    setIsSearchOpen(false);
+  };
 
   return (
     <div className="flex h-[calc(100vh-4rem)] gap-6 -mx-4 -mt-4">
@@ -304,8 +315,90 @@ export default function Caixa() {
 
         {step === 1 && (
           <div className="flex flex-col h-full">
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 relative">
               <h2 className="text-2xl font-bold text-gray-100">Escolha uma Categoria</h2>
+              
+              <div className="relative w-full sm:w-80">
+                <div className="relative z-50">
+                  <input
+                    type="text"
+                    placeholder="Pesquisar produto..."
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setIsSearchOpen(true);
+                    }}
+                    onFocus={() => setIsSearchOpen(true)}
+                    className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-10 pr-12 py-2.5 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all"
+                  />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                  {searchQuery && (
+                    <button
+                      onClick={() => {
+                        setSearchQuery('');
+                        setIsSearchOpen(false);
+                      }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200 text-xs bg-gray-700 hover:bg-gray-600 rounded px-1.5 py-0.5 cursor-pointer"
+                    >
+                      Limpar
+                    </button>
+                  )}
+                </div>
+
+                {isSearchOpen && searchQuery.trim() !== '' && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-40 cursor-default" 
+                      onClick={() => setIsSearchOpen(false)}
+                    />
+                    <div className="absolute left-0 right-0 mt-2 bg-gray-800 border border-gray-700 rounded-xl shadow-2xl z-50 max-h-80 overflow-y-auto divide-y divide-gray-750">
+                      {produtosFiltrados.length === 0 ? (
+                        <div className="p-4 text-center text-sm text-gray-500">
+                          Nenhum produto encontrado
+                        </div>
+                      ) : (
+                        produtosFiltrados.map(prod => (
+                          <button
+                            key={prod.produto_id}
+                            onClick={() => handleSelectProduct(prod)}
+                            className="w-full text-left p-3 hover:bg-gray-750 flex items-center gap-3 transition-colors first:rounded-t-xl last:rounded-b-xl cursor-pointer"
+                          >
+                            <div className="w-10 h-10 bg-gray-950 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden border border-gray-700">
+                              {prod.imagem_url ? (
+                                <img src={prod.imagem_url} alt={prod.nome} className="w-full h-full object-cover" />
+                              ) : (
+                                <ShoppingCart size={18} className="text-gray-600" />
+                              )}
+                            </div>
+                            
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between mb-0.5">
+                                <span className="font-bold text-sm text-gray-100 truncate block pr-2">{prod.nome}</span>
+                                <span 
+                                  style={{ backgroundColor: prod.categoria_cor + '15', color: prod.categoria_cor, borderColor: prod.categoria_cor + '30' }}
+                                  className="text-[9px] font-bold px-1.5 py-0.5 rounded border whitespace-nowrap"
+                                >
+                                  {prod.categoria_nome}
+                                </span>
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs text-red-400 font-bold">R$ {prod.preco.toFixed(2)}</span>
+                                <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                                  prod.quantidade_atual > 0 
+                                    ? 'bg-green-900/20 text-green-400 border border-green-500/20' 
+                                    : 'bg-red-900/20 text-red-400 border border-red-500/20'
+                                }`}>
+                                  {prod.quantidade_atual > 0 ? `${prod.quantidade_atual} disp.` : 'Sem estoque'}
+                                </span>
+                              </div>
+                            </div>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 auto-rows-fr">
               {categorias.map(cat => (
@@ -313,7 +406,7 @@ export default function Caixa() {
                   key={cat.id}
                   onClick={() => selectCategoria(cat)}
                   style={{ borderLeftColor: cat.cor, borderLeftWidth: '4px' }}
-                  className="bg-gray-800 hover:bg-gray-700 text-left p-6 rounded-xl flex flex-col justify-center min-h-[120px] transition-all transform hover:scale-[1.02]"
+                  className="bg-gray-800 hover:bg-gray-700 text-left p-6 rounded-xl flex flex-col justify-center min-h-[120px] transition-all transform hover:scale-[1.02] cursor-pointer"
                 >
                   <span className="text-xl font-bold text-gray-100">{cat.nome}</span>
                 </button>
@@ -324,15 +417,97 @@ export default function Caixa() {
 
         {step === 2 && (
           <div className="flex flex-col h-full">
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 relative">
               <div className="flex items-center gap-4">
                 <button 
                   onClick={() => setStep(1)}
-                  className="text-gray-400 hover:text-white bg-gray-800 p-2 rounded-lg"
+                  className="text-gray-400 hover:text-white bg-gray-800 p-2 rounded-lg cursor-pointer"
                 >
                   <ArrowLeft size={20} />
                 </button>
                 <h2 className="text-2xl font-bold text-gray-100">{categoriaSelecionada?.nome}</h2>
+              </div>
+
+              <div className="relative w-full sm:w-80">
+                <div className="relative z-50">
+                  <input
+                    type="text"
+                    placeholder="Pesquisar produto..."
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setIsSearchOpen(true);
+                    }}
+                    onFocus={() => setIsSearchOpen(true)}
+                    className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-10 pr-12 py-2.5 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all"
+                  />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+                  {searchQuery && (
+                    <button
+                      onClick={() => {
+                        setSearchQuery('');
+                        setIsSearchOpen(false);
+                      }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200 text-xs bg-gray-700 hover:bg-gray-600 rounded px-1.5 py-0.5 cursor-pointer"
+                    >
+                      Limpar
+                    </button>
+                  )}
+                </div>
+
+                {isSearchOpen && searchQuery.trim() !== '' && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-40 cursor-default" 
+                      onClick={() => setIsSearchOpen(false)}
+                    />
+                    <div className="absolute left-0 right-0 mt-2 bg-gray-800 border border-gray-700 rounded-xl shadow-2xl z-50 max-h-80 overflow-y-auto divide-y divide-gray-750">
+                      {produtosFiltrados.length === 0 ? (
+                        <div className="p-4 text-center text-sm text-gray-500">
+                          Nenhum produto encontrado
+                        </div>
+                      ) : (
+                        produtosFiltrados.map(prod => (
+                          <button
+                            key={prod.produto_id}
+                            onClick={() => handleSelectProduct(prod)}
+                            className="w-full text-left p-3 hover:bg-gray-750 flex items-center gap-3 transition-colors first:rounded-t-xl last:rounded-b-xl cursor-pointer"
+                          >
+                            <div className="w-10 h-10 bg-gray-950 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden border border-gray-700">
+                              {prod.imagem_url ? (
+                                <img src={prod.imagem_url} alt={prod.nome} className="w-full h-full object-cover" />
+                              ) : (
+                                <ShoppingCart size={18} className="text-gray-600" />
+                              )}
+                            </div>
+                            
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between mb-0.5">
+                                <span className="font-bold text-sm text-gray-100 truncate block pr-2">{prod.nome}</span>
+                                <span 
+                                  style={{ backgroundColor: prod.categoria_cor + '15', color: prod.categoria_cor, borderColor: prod.categoria_cor + '30' }}
+                                  className="text-[9px] font-bold px-1.5 py-0.5 rounded border whitespace-nowrap"
+                                >
+                                  {prod.categoria_nome}
+                                </span>
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs text-red-400 font-bold">R$ {prod.preco.toFixed(2)}</span>
+                                <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                                  prod.quantidade_atual > 0 
+                                    ? 'bg-green-900/20 text-green-400 border border-green-500/20' 
+                                    : 'bg-red-900/20 text-red-400 border border-red-500/20'
+                                }`}>
+                                  {prod.quantidade_atual > 0 ? `${prod.quantidade_atual} disp.` : 'Sem estoque'}
+                                </span>
+                              </div>
+                            </div>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
             </div>
             

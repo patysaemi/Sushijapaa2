@@ -6,12 +6,22 @@ import {
   ListOrdered, 
   PieChart, 
   Settings, 
-  UtensilsCrossed 
+  UtensilsCrossed,
+  LogOut
 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = async () => {
+    if (window.confirm('Deseja realmente sair do sistema?')) {
+      await logout();
+      navigate('/login');
+    }
+  };
 
   const menuItems = [
     { path: '/caixa', label: 'Pedidos', icon: <ShoppingCart size={20} /> },
@@ -70,8 +80,15 @@ export default function Sidebar() {
         })}
       </nav>
       
-      <div className="p-4 border-t border-gray-800 text-center">
-        <p className="text-xs text-gray-500">v1.0.0 - Caixa</p>
+      <div className="p-4 border-t border-gray-800 flex flex-col gap-2">
+        <button
+          onClick={handleLogout}
+          className="flex items-center justify-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200 cursor-pointer text-gray-400 hover:bg-red-500/10 hover:text-red-400 border border-transparent hover:border-red-500/20 font-medium text-sm w-full"
+        >
+          <LogOut size={16} />
+          <span>Sair</span>
+        </button>
+        <p className="text-[10px] text-gray-600 text-center mt-1">v1.0.0 - Caixa</p>
       </div>
     </aside>
   );

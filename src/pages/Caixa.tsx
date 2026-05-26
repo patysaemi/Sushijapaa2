@@ -260,7 +260,7 @@ export default function Caixa() {
             width: 72mm; 
             margin: 0 auto; 
             padding: 10px 5px; 
-            font-size: 13px; 
+            font-size: 16px; 
             color: #000;
             line-height: 1.3;
           }
@@ -268,18 +268,18 @@ export default function Caixa() {
           .bold { font-weight: bold; }
           .text-uppercase { text-transform: uppercase; }
           .header-title {
-            font-size: 16px;
+            font-size: 22px;
             font-weight: bold;
             margin-bottom: 2px;
             letter-spacing: 0.5px;
           }
           .header-subtitle {
-            font-size: 11px;
+            font-size: 14px;
             margin-bottom: 4px;
             letter-spacing: 0.5px;
           }
           .header-date {
-            font-size: 11px;
+            font-size: 14px;
             margin-bottom: 8px;
           }
           .client-box {
@@ -290,14 +290,14 @@ export default function Caixa() {
             text-align: center;
           }
           .client-title {
-            font-size: 11px;
+            font-size: 14px;
             font-weight: bold;
             text-transform: uppercase;
             margin-bottom: 2px;
             letter-spacing: 1px;
           }
           .client-name {
-            font-size: 22px;
+            font-size: 28px;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -309,15 +309,15 @@ export default function Caixa() {
           }
           .items-table th {
             font-weight: bold;
-            font-size: 11px;
+            font-size: 14px;
             padding: 4px 0;
             text-align: left;
           }
           .items-table th.col-qtd {
-            width: 10%;
+            width: 15%;
           }
           .items-table th.col-item {
-            width: 65%;
+            width: 60%;
           }
           .items-table th.col-valor {
             width: 25%;
@@ -326,7 +326,7 @@ export default function Caixa() {
           .items-table td {
             padding: 5px 0;
             vertical-align: top;
-            font-size: 12px;
+            font-size: 16px;
           }
           .items-table td.col-qtd {
             text-align: left;
@@ -348,11 +348,11 @@ export default function Caixa() {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 16px;
+            font-size: 20px;
             font-weight: bold;
           }
           .footer {
-            font-size: 10px;
+            font-size: 13px;
             margin-top: 15px;
             line-height: 1.4;
           }

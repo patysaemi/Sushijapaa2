@@ -105,26 +105,26 @@ export default function Pedidos() {
             max-width: 300px; 
             margin: 0 auto; 
             padding: 15px 10px; 
-            font-size: 12px; 
+            font-size: 16px; 
             color: #000;
-            line-height: 1.2;
+            line-height: 1.3;
           }
           .center { text-align: center; }
           .bold { font-weight: bold; }
-          .line { border-bottom: 1px dashed #000; margin: 10px 0; }
+          .line { border-bottom: 2px dashed #000; margin: 10px 0; }
           .item { display: flex; align-items: flex-start; margin-bottom: 6px; }
-          .item-qtd { width: 25px; }
+          .item-qtd { width: 35px; }
           .item-name { flex: 1; padding-right: 5px; text-transform: uppercase; word-break: break-word; }
           .item-price { text-align: right; white-space: nowrap; }
-          .total { font-weight: bold; font-size: 14px; text-align: center; margin: 10px 0; }
+          .total { font-weight: bold; font-size: 20px; text-align: center; margin: 10px 0; }
         </style>
       </head>
       <body>
-        <div class="center bold" style="font-size: 16px; margin-bottom: 5px;">TRAILER SUSHI<br>JAPA</div>
-        <div class="center" style="font-size: 10px; margin-bottom: 5px;">*** REIMPRESSÃO ***</div>
+        <div class="center bold" style="font-size: 22px; margin-bottom: 5px;">TRAILER SUSHI<br>JAPA</div>
+        <div class="center" style="font-size: 13px; margin-bottom: 5px;">*** REIMPRESSÃO ***</div>
         <div class="line"></div>
-        <div class="center bold" style="text-transform: uppercase; margin-bottom: 5px;">CLIENTE: ${pedido.cliente_nome}</div>
-        <div class="center" style="font-size: 11px;">DATA: ${dataHora}</div>
+        <div class="center bold" style="text-transform: uppercase; font-size: 20px; margin-bottom: 5px;">CLIENTE: ${pedido.cliente_nome}</div>
+        <div class="center" style="font-size: 14px;">DATA: ${dataHora}</div>
         <div class="line"></div>
     `;
 
@@ -142,7 +142,7 @@ export default function Pedidos() {
         <div class="line"></div>
         <div class="total">TOTAL: R$ ${pedido.total.toFixed(2)}</div>
         <div class="line"></div>
-        <div class="center bold" style="margin-top: 15px; font-size: 11px;">OBRIGADO PELA PREFERÊNCIA!</div>
+        <div class="center bold" style="margin-top: 15px; font-size: 13px;">OBRIGADO PELA PREFERÊNCIA!</div>
         <script>
           window.onload = function() { window.print(); window.close(); }
         </script>

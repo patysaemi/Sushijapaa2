@@ -108,32 +108,40 @@ export default function Pedidos() {
             font-size: 16px; 
             color: #000;
             line-height: 1.3;
+            text-align: center;
           }
           .center { text-align: center; }
           .bold { font-weight: bold; }
           .line { border-bottom: 2px dashed #000; margin: 10px 0; }
-          .item { display: flex; align-items: flex-start; margin-bottom: 6px; }
-          .item-qtd { width: 35px; }
-          .item-name { flex: 1; padding-right: 5px; text-transform: uppercase; word-break: break-word; }
-          .item-price { text-align: right; white-space: nowrap; }
-          .total { font-weight: bold; font-size: 20px; text-align: center; margin: 10px 0; }
+          .item-centered { 
+            text-align: center; 
+            font-size: 20px; 
+            font-weight: bold; 
+            text-transform: uppercase;
+            margin-bottom: 8px;
+          }
+          .item-price-centered { 
+            font-size: 14px; 
+            font-weight: normal; 
+            margin-top: 2px;
+          }
+          .total { font-weight: bold; font-size: 22px; text-align: center; margin: 10px 0; }
         </style>
       </head>
       <body>
-        <div class="center bold" style="font-size: 22px; margin-bottom: 5px;">TRAILER SUSHI<br>JAPA</div>
+        <div class="center bold" style="font-size: 24px; margin-bottom: 5px;">TRAILER SUSHI<br>JAPA</div>
         <div class="center" style="font-size: 13px; margin-bottom: 5px;">*** REIMPRESSÃO ***</div>
         <div class="line"></div>
-        <div class="center bold" style="text-transform: uppercase; font-size: 20px; margin-bottom: 5px;">CLIENTE: ${pedido.cliente_nome}</div>
+        <div class="center bold" style="text-transform: uppercase; font-size: 22px; margin-bottom: 5px;">CLIENTE: ${pedido.cliente_nome}</div>
         <div class="center" style="font-size: 14px;">DATA: ${dataHora}</div>
         <div class="line"></div>
     `;
 
     itens.forEach(item => {
       html += `
-        <div class="item">
-          <div class="item-qtd">${item.quantidade}x</div>
-          <div class="item-name">${item.produto_nome}</div>
-          <div class="item-price">R$ ${item.subtotal.toFixed(2)}</div>
+        <div class="item-centered">
+          ${item.quantidade}x ${item.produto_nome}
+          <div class="item-price-centered">R$ ${item.subtotal.toFixed(2)}</div>
         </div>
       `;
     });

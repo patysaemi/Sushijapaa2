@@ -311,7 +311,7 @@ export default function Caixa() {
             font-weight: bold;
             font-size: 14px;
             padding: 4px 0;
-            text-align: left;
+            text-align: center;
           }
           .items-table th.col-qtd {
             width: 15%;
@@ -321,23 +321,27 @@ export default function Caixa() {
           }
           .items-table th.col-valor {
             width: 25%;
-            text-align: right;
           }
           .items-table td {
-            padding: 5px 0;
-            vertical-align: top;
+            padding: 6px 0;
+            vertical-align: middle;
             font-size: 16px;
           }
           .items-table td.col-qtd {
-            text-align: left;
+            text-align: center;
             font-weight: bold;
+            font-size: 20px;
           }
           .items-table td.col-item {
+            text-align: center;
             text-transform: uppercase;
             word-break: break-word;
+            font-weight: bold;
+            font-size: 20px;
           }
           .items-table td.col-valor {
-            text-align: right;
+            text-align: center;
+            font-size: 15px;
             white-space: nowrap;
           }
           .total-box {
@@ -345,10 +349,8 @@ export default function Caixa() {
             border-bottom: 3px solid #000;
             padding: 8px 0;
             margin: 8px 0 15px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 20px;
+            text-align: center;
+            font-size: 22px;
             font-weight: bold;
           }
           .footer {
@@ -400,8 +402,7 @@ export default function Caixa() {
         </table>
 
         <div class="total-box">
-          <span>TOTAL</span>
-          <span>R$ ${totalCarrinho.toFixed(2)}</span>
+          TOTAL: R$ ${totalCarrinho.toFixed(2)}
         </div>
 
         <div class="center footer">

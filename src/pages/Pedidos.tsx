@@ -105,42 +105,42 @@ export default function Pedidos() {
             max-width: 300px; 
             margin: 0 auto; 
             padding: 15px 10px; 
-            font-size: 16px; 
+            font-size: 12px; 
             color: #000;
             line-height: 1.3;
             text-align: center;
           }
           .center { text-align: center; }
           .bold { font-weight: bold; }
-          .line { border-bottom: 2px dashed #000; margin: 10px 0; }
+          .line { border-bottom: 2px dashed #000; margin: 8px 0; }
           .item-centered { 
             text-align: center; 
-            font-size: 20px; 
+            font-size: 24px; 
             font-weight: bold; 
             text-transform: uppercase;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
           }
           .item-price-centered { 
-            font-size: 14px; 
-            font-weight: normal; 
-            margin-top: 2px;
+            font-size: 20px; 
+            font-weight: bold; 
+            margin-top: 3px;
           }
-          .total { font-weight: bold; font-size: 22px; text-align: center; margin: 10px 0; }
+          .total { font-weight: bold; font-size: 26px; text-align: center; margin: 12px 0; }
         </style>
       </head>
       <body>
-        <div class="center bold" style="font-size: 24px; margin-bottom: 5px;">TRAILER SUSHI<br>JAPA</div>
-        <div class="center" style="font-size: 13px; margin-bottom: 5px;">*** REIMPRESSÃO ***</div>
+        <div class="center bold" style="font-size: 14px; margin-bottom: 3px;">TRAILER SUSHI JAPA</div>
+        <div class="center" style="font-size: 10px; margin-bottom: 3px;">*** REIMPRESSÃO ***</div>
         <div class="line"></div>
-        <div class="center bold" style="text-transform: uppercase; font-size: 22px; margin-bottom: 5px;">CLIENTE: ${pedido.cliente_nome}</div>
-        <div class="center" style="font-size: 14px;">DATA: ${dataHora}</div>
+        <div class="center bold" style="text-transform: uppercase; font-size: 15px; margin-bottom: 3px;">CLIENTE: ${pedido.cliente_nome}</div>
+        <div class="center" style="font-size: 11px;">DATA: ${dataHora}</div>
         <div class="line"></div>
     `;
 
     itens.forEach(item => {
       html += `
         <div class="item-centered">
-          ${item.quantidade}x ${item.produto_nome}
+          ${item.quantidade}x ${item.produto_nome.toUpperCase()}
           <div class="item-price-centered">R$ ${item.subtotal.toFixed(2)}</div>
         </div>
       `;
@@ -150,7 +150,7 @@ export default function Pedidos() {
         <div class="line"></div>
         <div class="total">TOTAL: R$ ${pedido.total.toFixed(2)}</div>
         <div class="line"></div>
-        <div class="center bold" style="margin-top: 15px; font-size: 13px;">OBRIGADO PELA PREFERÊNCIA!</div>
+        <div class="center bold" style="margin-top: 12px; font-size: 11px;">OBRIGADO PELA PREFERÊNCIA!</div>
         <script>
           window.onload = function() { window.print(); window.close(); }
         </script>

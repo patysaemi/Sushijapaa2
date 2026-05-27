@@ -260,89 +260,61 @@ export default function Caixa() {
             width: 72mm; 
             margin: 0 auto; 
             padding: 10px 5px; 
-            font-size: 16px; 
+            font-size: 12px; 
             color: #000;
             line-height: 1.3;
+            text-align: center;
           }
           .center { text-align: center; }
           .bold { font-weight: bold; }
           .text-uppercase { text-transform: uppercase; }
           .header-title {
-            font-size: 22px;
+            font-size: 14px;
             font-weight: bold;
             margin-bottom: 2px;
             letter-spacing: 0.5px;
           }
           .header-subtitle {
-            font-size: 14px;
+            font-size: 10px;
             margin-bottom: 4px;
             letter-spacing: 0.5px;
           }
           .header-date {
-            font-size: 14px;
-            margin-bottom: 8px;
+            font-size: 11px;
+            margin-bottom: 6px;
           }
           .client-box {
             border-top: 2px solid #000;
             border-bottom: 2px solid #000;
-            padding: 6px 0;
-            margin: 8px 0;
+            padding: 5px 0;
+            margin: 6px 0;
             text-align: center;
           }
           .client-title {
-            font-size: 14px;
+            font-size: 11px;
             font-weight: bold;
             text-transform: uppercase;
             margin-bottom: 2px;
             letter-spacing: 1px;
           }
           .client-name {
-            font-size: 28px;
+            font-size: 16px;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
           }
-          .items-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 8px 0;
-          }
-          .items-table th {
-            font-weight: bold;
-            font-size: 14px;
-            padding: 4px 0;
-            text-align: center;
-          }
-          .items-table th.col-qtd {
-            width: 15%;
-          }
-          .items-table th.col-item {
-            width: 60%;
-          }
-          .items-table th.col-valor {
-            width: 25%;
-          }
-          .items-table td {
-            padding: 6px 0;
-            vertical-align: middle;
-            font-size: 16px;
-          }
-          .items-table td.col-qtd {
-            text-align: center;
-            font-weight: bold;
-            font-size: 20px;
-          }
-          .items-table td.col-item {
-            text-align: center;
+          .line { border-bottom: 2px dashed #000; margin: 8px 0; }
+          .item-centered { 
+            text-align: center; 
+            font-size: 24px; 
+            font-weight: bold; 
             text-transform: uppercase;
-            word-break: break-word;
-            font-weight: bold;
-            font-size: 20px;
+            margin-bottom: 10px;
           }
-          .items-table td.col-valor {
-            text-align: center;
-            font-size: 15px;
-            white-space: nowrap;
+          .item-price-centered { 
+            font-size: 20px; 
+            font-weight: bold; 
+            margin-top: 3px;
           }
           .total-box {
             border-top: 3px solid #000;
@@ -350,11 +322,11 @@ export default function Caixa() {
             padding: 8px 0;
             margin: 8px 0 15px 0;
             text-align: center;
-            font-size: 22px;
+            font-size: 26px;
             font-weight: bold;
           }
           .footer {
-            font-size: 13px;
+            font-size: 11px;
             margin-top: 15px;
             line-height: 1.4;
           }
@@ -376,30 +348,20 @@ export default function Caixa() {
           <div class="client-name">${clienteNome}</div>
         </div>
 
-        <table class="items-table">
-          <thead>
-            <tr>
-              <th class="col-qtd">QTD</th>
-              <th class="col-item">ITEM</th>
-              <th class="col-valor">VALOR</th>
-            </tr>
-          </thead>
-          <tbody>
+        <div class="line"></div>
     `;
 
     carrinho.forEach(item => {
       html += `
-            <tr>
-              <td class="col-qtd">${item.quantidade_carrinho}</td>
-              <td class="col-item">${item.nome}</td>
-              <td class="col-valor">R$ ${item.subtotal.toFixed(2)}</td>
-            </tr>
+        <div class="item-centered">
+          ${item.quantidade_carrinho}x ${item.nome.toUpperCase()}
+          <div class="item-price-centered">R$ ${item.subtotal.toFixed(2)}</div>
+        </div>
       `;
     });
 
     html += `
-          </tbody>
-        </table>
+        <div class="line"></div>
 
         <div class="total-box">
           TOTAL: R$ ${totalCarrinho.toFixed(2)}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { format } from 'date-fns';
+import { format, startOfDay, endOfDay } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Eye, Printer, XCircle, Trash2, X } from 'lucide-react';
 import type { Pedido, PedidoItem } from '../types/database';
@@ -15,20 +15,21 @@ export default function Pedidos() {
   const [itensPedido, setItensPedido] = useState<PedidoItem[]>([]);
   const [loadingItens, setLoadingItens] = useState(false);
 
-  const hoje = new Date().toISOString().split('T')[0];
-
   useEffect(() => {
     fetchPedidos();
   }, []);
 
   const fetchPedidos = async () => {
     setLoading(true);
+    const start = startOfDay(new Date()).toISOString();
+    const end = endOfDay(new Date()).toISOString();
+
     // Buscar apenas os pedidos de hoje por padrão
     const { data } = await supabase
       .from('pedidos')
       .select('*')
-      .gte('data', `${hoje}T00:00:00`)
-      .lte('data', `${hoje}T23:59:59`)
+      .gte('data', start)
+      .lte('data', end)
       .order('data', { ascending: false });
       
     if (data) setPedidos(data);

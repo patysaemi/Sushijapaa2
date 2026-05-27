@@ -19,7 +19,7 @@ export default function Estoque() {
   const [pendingNavPath, setPendingNavPath] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const hoje = new Date().toISOString().split('T')[0];
+  const hoje = new Date().toLocaleDateString('sv-SE');
 
   useEffect(() => {
     fetchData();

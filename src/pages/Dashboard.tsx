@@ -103,7 +103,12 @@ export default function Dashboard() {
             type="date" 
             className="bg-transparent border-none text-sm text-gray-100 focus:outline-none"
             value={format(selectedDate, 'yyyy-MM-dd')}
-            onChange={(e) => setSelectedDate(new Date(e.target.value))}
+            onChange={(e) => {
+              if (e.target.value) {
+                const [year, month, day] = e.target.value.split('-').map(Number);
+                setSelectedDate(new Date(year, month - 1, day));
+              }
+            }}
           />
         </div>
       </div>

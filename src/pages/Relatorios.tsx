@@ -5,7 +5,7 @@ import { Calendar, DollarSign, ShoppingBag, Send, AlertCircle, CheckCircle2, Mes
 import type { Pedido, PedidoItem } from '../types/database';
 
 export default function Relatorios() {
-  const hoje = new Date().toISOString().split('T')[0];
+  const hoje = new Date().toLocaleDateString('sv-SE');
   const [dataInicio, setDataInicio] = useState(hoje);
   const [dataFim, setDataFim] = useState(hoje);
   
@@ -27,16 +27,23 @@ export default function Relatorios() {
     
     setLoading(true);
     
-    // Configura horas para pegar o dia todo
-    const start = startOfDay(new Date(dataInicio + 'T00:00:00')).toISOString();
-    const end = endOfDay(new Date(dataFim + 'T00:00:00')).toISOString();
+    // Configura horas para pegar o dia todo com precisão de fuso horário
+    const [yearI, monthI, dayI] = dataInicio.split('-').map(Number);
+    const [yearF, monthF, dayF] = dataFim.split('-').map(Number);
+    
+    const start = startOfDay(new Date(yearI, monthI - 1, dayI)).toISOString();
+    const end = endOfDay(new Date(yearF, monthF - 1, dayF)).toISOString();
 
-    const { data: pedidosData } = await supabase
+    const { data: pedidosData, error: pedidosError } = await supabase
       .from('pedidos')
       .select('*')
       .gte('data', start)
       .lte('data', end)
       .neq('status', 'cancelado');
+
+    if (pedidosError) {
+      console.error("Erro ao buscar pedidos no relatório:", pedidosError);
+    }
 
     if (pedidosData) {
       setPedidos(pedidosData);

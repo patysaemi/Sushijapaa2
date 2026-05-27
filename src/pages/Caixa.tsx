@@ -58,7 +58,7 @@ export default function Caixa() {
         .from('categorias')
         .select('id, nome, cor');
 
-      const hoje = new Date().toISOString().split('T')[0];
+      const hoje = new Date().toLocaleDateString('sv-SE');
       const { data: estoqueHoje } = await supabase
         .from('estoque_dia')
         .select('produto_id, quantidade_atual')
@@ -103,7 +103,7 @@ export default function Caixa() {
     }
 
     const produtosIds = produtosDaCategoria.map(p => p.id);
-    const hoje = new Date().toISOString().split('T')[0];
+    const hoje = new Date().toLocaleDateString('sv-SE');
 
     const { data: estoqueHoje } = await supabase
       .from('estoque_dia')
